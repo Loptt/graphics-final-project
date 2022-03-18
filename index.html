@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<head>
+  <title>Graficas</title>
+  <meta charset="utf-8">
+</head>
+<body>
+  <canvas id="glcanvas" width="640" height="480"></canvas>
+</body>
+<script>
+  function main() {
+    const canvas = document.getElementById("glcanvas");
+    const gl = canvas.getContext('webgl');
+
+    if (!gl) {
+      alert('Cannot initialize WebGL');
+      return;
+    }
+    
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+  }
+
+  window.onload = main;
+</script>
+</html>
