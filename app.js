@@ -1,15 +1,18 @@
 import * as THREE from 'https://cdn.skypack.dev/three@0.137';
+import {GLTFLoader} from './GLTFLoader.js';
 
+console.log(THREE)
 function main() {
   const canvas = document.querySelector('#glcanvas');
   const renderer = new THREE.WebGLRenderer({canvas});
+  const loader = new GLTFLoader();
 
   const fov = 75;
   const aspect = 2; 
   const near = 0.1;
   const far = 5;
   const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-  camera.position.z = 2;
+  camera.position.z = 5;
 
   const scene = new THREE.Scene();
 
@@ -21,6 +24,12 @@ function main() {
     scene.add(light);
   }
 
+  loader.load('./Pirate_Ship.glb', (gltf) => {
+    scene.add(gltf.scene)
+  }, undefined, (error) => {
+    console.log(error)
+  });
+
   const boxWidth = 1;
   const boxHeight = 1;
   const boxDepth = 1;
@@ -29,7 +38,7 @@ function main() {
   const material = new THREE.MeshPhongMaterial({color: 0x44aa88});
 
   const cube = new THREE.Mesh(geometry, material);
-  scene.add(cube);
+  //scene.add(cube);
 
   function render(time) {
     time *= 0.001;
