@@ -1,6 +1,11 @@
 import * as THREE from 'https://cdn.skypack.dev/three@0.137';
-import {OrbitControls} from './OrbitControls.js';
-import {GLTFLoader} from './GLTFLoader.js';
+import {OrbitControls} from './lib/OrbitControls.js';
+import {GLTFLoader} from './lib/GLTFLoader.js';
+import {OBJLoader} from './lib/OBJLoader.js';
+import {MTLLoader} from './lib/MTLLoader.js';
+
+let ship;
+let palms = [];
 
 function resizeRendererToDisplaySize(renderer) {
   const canvas = renderer.domElement;
@@ -16,8 +21,8 @@ function resizeRendererToDisplaySize(renderer) {
 function configureCamera() {
   const fov = 75;
   const aspect = 2; 
-  const near = 1;
-  const far = 15;
+  const near = 2;
+  const far = 25;
   const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
   camera.position.z = 10;
   camera.position.y = 2;
@@ -47,6 +52,41 @@ function configureScene() {
   return scene;
 }
 
+function loadShip(scene) {
+  const loader = new GLTFLoader();
+  loader.load('./assets/going_merry/scene.gltf', (gltf) => {
+    ship = gltf.scene;
+    ship.position.y = 3;
+    scene.add(gltf.scene)
+  }, undefined, (error) => {
+    console.log(error)
+  });
+}
+
+function loadPalms(scene) {
+  const loader = new OBJLoader();
+  const mtlLoader = new MTLLoader();
+  mtlLoader.load('./assets/palm/palm.mtl', (mtl) => {
+    mtl.preload();
+    loader.setMaterials(mtl);
+    loader.load('./assets/palm/palm.obj', (root) => {
+        root.position.y = 3;
+        root.position.x = 5;
+        root.position.z = 0;
+  
+        root.rotation.x = 1.5 * Math.PI;
+        
+        const newScale = 0.003;
+        root.scale.y = newScale;
+        root.scale.x = newScale;
+        root.scale.z = newScale;
+  
+        scene.add(root);
+        palms.push(root);
+      });
+  });
+}
+
 function main() {
   const canvas = document.querySelector('#glcanvas');
   const renderer = new THREE.WebGLRenderer({canvas});
@@ -58,15 +98,8 @@ function main() {
   controls.target.set(0, 5, 0);
   controls.update();
 
-  let ship;
-
-  loader.load('./assets/going_merry/scene.gltf', (gltf) => {
-    ship = gltf.scene;
-    ship.position.y = 3;
-    scene.add(gltf.scene)
-  }, undefined, (error) => {
-    console.log(error)
-  });
+  loadShip(scene);
+  loadPalms(scene);
 
   function render(time) {
     time *= 0.001;
