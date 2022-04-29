@@ -7,6 +7,13 @@ import {MTLLoader} from './lib/MTLLoader.js';
 let ship;
 let palms = [];
 
+// Retorna un entero aleatorio entre min (incluido) y max (excluido)
+// ¡Usando Math.round() te dará una distribución no-uniforme!
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
+
 function resizeRendererToDisplaySize(renderer) {
   const canvas = renderer.domElement;
   const width = canvas.clientWidth;
@@ -22,11 +29,11 @@ function configureCamera() {
   const fov = 75;
   const aspect = 2; 
   const near = 2;
-  const far = 25;
+  const far = 1250;
   const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
   camera.position.z = 10;
   camera.position.y = 2;
-  camera.position.x = 1;
+  camera.position.x = 25;
 
   return camera;
 }
@@ -57,26 +64,30 @@ function loadShip(scene) {
   loader.load('./assets/going_merry/scene.gltf', (gltf) => {
     ship = gltf.scene;
     ship.position.y = 3;
+    const newScale = 2;
+        ship.scale.y = newScale;
+        ship.scale.x = newScale;
+        ship.scale.z = newScale;
     scene.add(gltf.scene)
   }, undefined, (error) => {
     console.log(error)
   });
 }
 
-function loadPalms(scene) {
+function loadPalms(scene,x,y,z) {
   const loader = new OBJLoader();
   const mtlLoader = new MTLLoader();
   mtlLoader.load('./assets/palm/palm.mtl', (mtl) => {
     mtl.preload();
     loader.setMaterials(mtl);
     loader.load('./assets/palm/palm.obj', (root) => {
-        root.position.y = 3;
-        root.position.x = 5;
-        root.position.z = 0;
+        root.position.y = y;
+        root.position.x = x;
+        root.position.z = z;
   
         root.rotation.x = 1.5 * Math.PI;
         
-        const newScale = 0.003;
+        const newScale = 0.004;
         root.scale.y = newScale;
         root.scale.x = newScale;
         root.scale.z = newScale;
@@ -85,6 +96,33 @@ function loadPalms(scene) {
         palms.push(root);
       });
   });
+}
+
+function genIsland(radious, wSegments, hSegments, x,y,z) {
+  const geometry = new THREE.SphereGeometry( radious, wSegments, hSegments, 0, Math.PI * 2, 0, Math.PI/4);
+  const material = new THREE.MeshBasicMaterial( { color: "#CABD97" } );
+  let sphere = new THREE.Mesh( geometry, material );
+  sphere.position.y = y;
+  sphere.position.x = x;
+  sphere.position.z = z;
+  return sphere
+}
+
+function loadIslands(scene) {
+  let radious, wSegments, hSegments, x, y, z;
+  for(let i = 0; i < 7; i++){
+    radious = getRandomInt(12,40)
+    wSegments = getRandomInt(3,radious)
+    hSegments = getRandomInt(2,radious)
+    x = 25 + getRandomInt(-100,100)
+    y= 3 - radious
+    z= 10 + getRandomInt(-100,100)
+    let max_palms = getRandomInt(0,10);
+    for(let k = 0; k< max_palms;k++){
+      loadPalms(scene,x+ getRandomInt(-radious/2,radious/2),2,z+getRandomInt(-radious/2,radious/2))
+    }
+    scene.add( genIsland(radious,wSegments,hSegments,x,y,z));
+  }
 }
 
 function main() {
@@ -99,7 +137,8 @@ function main() {
   controls.update();
 
   loadShip(scene);
-  loadPalms(scene);
+  loadPalms(scene,3,5,0);
+  loadIslands(scene);
 
   function render(time) {
     time *= 0.001;
