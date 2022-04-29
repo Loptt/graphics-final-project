@@ -1,7 +1,6 @@
 import * as THREE from 'https://cdn.skypack.dev/three@0.137';
 import {GLTFLoader} from './GLTFLoader.js';
 
-console.log(THREE)
 function main() {
   const canvas = document.querySelector('#glcanvas');
   const renderer = new THREE.WebGLRenderer({canvas});
@@ -13,18 +12,23 @@ function main() {
   const far = 5;
   const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
   camera.position.z = 5;
+  camera.position.y = 2;
+  camera.position.x = 1;
 
   const scene = new THREE.Scene();
 
   {
     const color = 0xFFFFFF;
-    const intensity = 1;
+    const intensity = 2;
     const light = new THREE.DirectionalLight(color, intensity);
     light.position.set(-1, 2, 4);
     scene.add(light);
   }
 
-  loader.load('./Pirate_Ship.glb', (gltf) => {
+  let ship;
+
+  loader.load('./assets/going_merry/going_merry.gltf', (gltf) => {
+    ship = gltf.scene;
     scene.add(gltf.scene)
   }, undefined, (error) => {
     console.log(error)
@@ -45,6 +49,10 @@ function main() {
 
     cube.rotation.x = time;
     cube.rotation.y = time;
+
+    if (ship) {
+      ship.rotation.y = time;
+    }
 
     renderer.render(scene, camera);
 
