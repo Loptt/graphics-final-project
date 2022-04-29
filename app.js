@@ -1,22 +1,32 @@
 import * as THREE from 'https://cdn.skypack.dev/three@0.137';
 import {GLTFLoader} from './GLTFLoader.js';
 
-function main() {
-  const canvas = document.querySelector('#glcanvas');
-  const renderer = new THREE.WebGLRenderer({canvas});
-  const loader = new GLTFLoader();
+function resizeRendererToDisplaySize(renderer) {
+  const canvas = renderer.domElement;
+  const width = canvas.clientWidth;
+  const height = canvas.clientHeight;
+  const needResize = canvas.width !== width || canvas.height !== height;
+  if (needResize) {
+    renderer.setSize(width, height, false);
+  }
+  return needResize;
+}
 
+function configureCamera() {
   const fov = 75;
   const aspect = 2; 
   const near = 0.1;
-  const far = 5;
+  const far = 7;
   const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
   camera.position.z = 5;
   camera.position.y = 2;
   camera.position.x = 1;
 
-  const scene = new THREE.Scene();
+  return camera;
+}
 
+function configureScene() {
+  const scene = new THREE.Scene();
   {
     const color = 0xFFFFFF;
     const intensity = 2;
@@ -24,6 +34,16 @@ function main() {
     light.position.set(-1, 2, 4);
     scene.add(light);
   }
+
+  return scene;
+}
+
+function main() {
+  const canvas = document.querySelector('#glcanvas');
+  const renderer = new THREE.WebGLRenderer({canvas});
+  const loader = new GLTFLoader();
+  const camera = configureCamera();
+  const scene = configureScene();
 
   let ship;
 
@@ -34,21 +54,14 @@ function main() {
     console.log(error)
   });
 
-  const boxWidth = 1;
-  const boxHeight = 1;
-  const boxDepth = 1;
-  const geometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
-
-  const material = new THREE.MeshPhongMaterial({color: 0x44aa88});
-
-  const cube = new THREE.Mesh(geometry, material);
-  //scene.add(cube);
-
   function render(time) {
     time *= 0.001;
 
-    cube.rotation.x = time;
-    cube.rotation.y = time;
+    if (resizeRendererToDisplaySize(renderer)) {
+      const canvas = renderer.domElement;
+      camera.aspect = canvas.clientWidth / canvas.clientHeight;
+      camera.updateProjectionMatrix();
+    }
 
     if (ship) {
       ship.rotation.y = time;
