@@ -1659,12 +1659,12 @@
   "buffers": [
     {
       "byteLength": 3443828,
-      "uri": "going_merry.bin"
+      "uri": "scene.bin"
     }
   ],
   "images": [
     {
-      "uri": "going_merry.png"
+      "uri": "textures/going_merry_baseColor.png"
     }
   ],
   "materials": [

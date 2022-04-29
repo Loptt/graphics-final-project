@@ -1,4 +1,5 @@
 import * as THREE from 'https://cdn.skypack.dev/three@0.137';
+import {OrbitControls} from './OrbitControls.js';
 import {GLTFLoader} from './GLTFLoader.js';
 
 function resizeRendererToDisplaySize(renderer) {
@@ -15,10 +16,10 @@ function resizeRendererToDisplaySize(renderer) {
 function configureCamera() {
   const fov = 75;
   const aspect = 2; 
-  const near = 0.1;
-  const far = 7;
+  const near = 1;
+  const far = 15;
   const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-  camera.position.z = 5;
+  camera.position.z = 10;
   camera.position.y = 2;
   camera.position.x = 1;
 
@@ -29,10 +30,18 @@ function configureScene() {
   const scene = new THREE.Scene();
   {
     const color = 0xFFFFFF;
-    const intensity = 2;
-    const light = new THREE.DirectionalLight(color, intensity);
-    light.position.set(-1, 2, 4);
-    scene.add(light);
+    const sunIntensity = 2;
+    const sunLight = new THREE.DirectionalLight(color, sunIntensity);
+    sunLight.position.set(-1, 2, 4);
+    scene.add(sunLight);
+
+    const skyColor = 0xB1E1FF;  // light blue
+    const groundColor = 0x3daeff;  // brownish orange
+    const hemisphereIntensity = 1;
+    const hemisphereLight = new THREE.HemisphereLight(skyColor, groundColor, hemisphereIntensity);
+    scene.add(hemisphereLight);
+
+    scene.background = new THREE.Color(skyColor);
   }
 
   return scene;
@@ -45,10 +54,15 @@ function main() {
   const camera = configureCamera();
   const scene = configureScene();
 
+  const controls = new OrbitControls(camera, canvas);
+  controls.target.set(0, 5, 0);
+  controls.update();
+
   let ship;
 
-  loader.load('./assets/going_merry/going_merry.gltf', (gltf) => {
+  loader.load('./assets/going_merry/scene.gltf', (gltf) => {
     ship = gltf.scene;
+    ship.position.y = 3;
     scene.add(gltf.scene)
   }, undefined, (error) => {
     console.log(error)
@@ -64,7 +78,7 @@ function main() {
     }
 
     if (ship) {
-      ship.rotation.y = time;
+      ship.rotation.y = time * 0.3;
     }
 
     renderer.render(scene, camera);
