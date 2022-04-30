@@ -111,14 +111,14 @@ function genIsland(radious, wSegments, hSegments, x, y, z) {
 
 function loadIslands(scene) {
   let radious, wSegments, hSegments, x, y, z;
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < 8; i++) {
     radious = getRandomInt(15, 40)
     wSegments = getRandomInt(3, 5 + i)
     hSegments = getRandomInt(2, 7 + i)
     x = 25 + getRandomInt(-100, 100)
     y = 10 - radious
     z = 10 + getRandomInt(-100, 100)
-    let max_palms = getRandomInt(0, 4);
+    let max_palms = getRandomInt(0, 5);
     for (let k = 0; k < max_palms; k++) {
       loadPalms(scene, x + getRandomInt(-radious / 2, radious / 2), 4, z + getRandomInt(-radious / 2, radious / 2))
     }
