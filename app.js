@@ -64,7 +64,7 @@ function loadShip(scene) {
   const loader = new GLTFLoader();
   loader.load('./assets/going_merry/scene.gltf', (gltf) => {
     ship = gltf.scene;
-    ship.position.y = 3;
+    ship.position.y = -1;
     const newScale = 2;
     ship.scale.y = newScale;
     ship.scale.x = newScale;
@@ -146,9 +146,9 @@ function createFloor(scene) {
 
 function animateWaves(time) {
   let vertices = sea.geometry.attributes.position.array;
-  var wavespeed = 0.04;
-  var wavewidth = 5;
-  var waveheight = 10;
+  var wavespeed = 0.02;
+  var wavewidth = 0.6;
+  var waveheight = 3;
   for (let vertexIndex = 0; vertexIndex < vertices.length; vertexIndex += 3) {
     // console.log(vertices[vertexIndex+2])
     if (vertices[vertexIndex + 2] > -1) {
@@ -165,7 +165,6 @@ function animateWaves(time) {
 function main() {
   const canvas = document.querySelector('#glcanvas');
   const renderer = new THREE.WebGLRenderer({ canvas });
-  const loader = new GLTFLoader();
   const camera = configureCamera();
   const scene = configureScene();
 
