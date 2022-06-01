@@ -175,8 +175,6 @@ function controlShip(ship, key) {
     return;
   }
 
-  console.log(key)
-
   switch(key) {
     case KEYS.KEY_UP:
       move2D(ship, 1, 0);
