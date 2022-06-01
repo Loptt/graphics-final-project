@@ -4,8 +4,9 @@ import { GLTFLoader } from './lib/GLTFLoader.js';
 import { OBJLoader } from './lib/OBJLoader.js';
 import { MTLLoader } from './lib/MTLLoader.js';
 import { KEYS } from './constants.js';
+import { Ship } from './models/ship.js'
 
-let ship;
+let ship = new Ship();
 let sea;
 let palms = [];
 
@@ -61,21 +62,6 @@ function configureScene() {
   }
 
   return scene;
-}
-
-function loadShip(scene) {
-  const loader = new GLTFLoader();
-  loader.load('./assets/going_merry/scene.gltf', (gltf) => {
-    ship = gltf.scene;
-    ship.position.y = -1;
-    const newScale = 2;
-    ship.scale.y = newScale;
-    ship.scale.x = newScale;
-    ship.scale.z = newScale;
-    scene.add(gltf.scene)
-  }, undefined, (error) => {
-    console.log(error)
-  });
 }
 
 function loadPalms(scene, x, y, z) {
@@ -167,26 +153,23 @@ function animateWaves(time) {
 
 function move2D(object, deltax, deltaz) {
   object.position.x += deltax;
-  object.position.z += deltaz
+  object.position.z += deltaz;
 }
 
 function controlShip(ship, key) {
-  if (!ship) {
-    return;
-  }
-
   switch(key) {
     case KEYS.KEY_UP:
-      move2D(ship, 1, 0);
+      ship.moveForward(1);
       break;
     case KEYS.KEY_RIGHT:
-      move2D(ship, 0, 1);
+      ship.object.rotateX(Math.PI*(-1/100));
+      console.log(ship.object.rotation)
       break;
     case KEYS.KEY_DOWN:
-      move2D(ship, -1, 0);
       break;
     case KEYS.KEY_LEFT:
-      move2D(ship, 0, -1);
+      ship.object.rotateX(Math.PI*(1/100));
+      console.log(ship.object.rotation)
       break;
   }
 }
@@ -217,8 +200,8 @@ function main() {
   controls.update();
 
   createFloor(scene);
-  loadShip(scene);
   loadIslands(scene);
+  ship.load(scene);
   
   setupKeyListeners();
 
