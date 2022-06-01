@@ -3,10 +3,13 @@ import { OrbitControls } from './lib/OrbitControls.js';
 import { GLTFLoader } from './lib/GLTFLoader.js';
 import { OBJLoader } from './lib/OBJLoader.js';
 import { MTLLoader } from './lib/MTLLoader.js';
+import { KEYS } from './constants.js';
 
 let ship;
 let sea;
 let palms = [];
+
+let pressedKeys = new Set();
 
 // Retorna un entero aleatorio entre min (incluido) y max (excluido)
 // ¡Usando Math.round() te dará una distribución no-uniforme!
@@ -162,6 +165,49 @@ function animateWaves(time) {
   sea.geometry.computeVertexNormals();
 }
 
+function move2D(object, deltax, deltaz) {
+  object.position.x += deltax;
+  object.position.z += deltaz
+}
+
+function controlShip(ship, key) {
+  if (!ship) {
+    return;
+  }
+
+  console.log(key)
+
+  switch(key) {
+    case KEYS.KEY_UP:
+      move2D(ship, 1, 0);
+      break;
+    case KEYS.KEY_RIGHT:
+      move2D(ship, 0, 1);
+      break;
+    case KEYS.KEY_DOWN:
+      move2D(ship, -1, 0);
+      break;
+    case KEYS.KEY_LEFT:
+      move2D(ship, 0, -1);
+      break;
+  }
+}
+
+function setupKeyListeners() {
+  document.onkeydown = (e) => {
+    pressedKeys.add(e.code);
+  }
+  document.onkeyup = (e) => {
+    pressedKeys.delete(e.code);
+  }
+}
+
+function processKeys(pressedKeys) {
+  for (const k of pressedKeys) {
+    controlShip(ship, k);
+  }
+}
+
 function main() {
   const canvas = document.querySelector('#glcanvas');
   const renderer = new THREE.WebGLRenderer({ canvas });
@@ -171,10 +217,13 @@ function main() {
   const controls = new OrbitControls(camera, canvas);
   controls.target.set(0, 5, 0);
   controls.update();
+
   createFloor(scene);
   loadShip(scene);
-  // loadPalms(scene,3,5,0);
   loadIslands(scene);
+  
+  setupKeyListeners();
+
   let tick = 0;
   function render(time) {
     time *= 0.001;
@@ -185,9 +234,8 @@ function main() {
       camera.updateProjectionMatrix();
     }
 
-    if (ship) {
-      ship.rotation.y = time * 0.3;
-    }
+    processKeys(pressedKeys);
+
     if (sea) {
       animateWaves(tick)
     }
