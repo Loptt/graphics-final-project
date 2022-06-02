@@ -4,23 +4,13 @@ class Ship {
   constructor() {
     this.object = null;
     this.speed = 0;
-  }
-
-  moveForward(delta) {
-    let rotation = this.object.rotation.y// + Math.PI;
-
-    //console.log("COS ",Math.cos(rotation));
-    //console.log("SIN ", Math.sin(rotation));
-    console.log("ANGLE ", rotation);
-    //console.log("X ", this.object.position.x);
-    //console.log("Z ", this.object.position.z);
-    this.object.position.x += delta * Math.sin(rotation);
-    this.object.position.z += delta * Math.cos(rotation);
+    this.orientation = 0;
+    this.assetPath = './assets/going_merry/scene.gltf';
   }
 
   load(scene) {
     const loader = new GLTFLoader();
-    loader.load('./assets/going_merry/scene.gltf', (gltf) => {
+    loader.load(this.assetPath, (gltf) => {
       let object = gltf.scene;
       object.position.y = -1;
       const newScale = 2;
@@ -32,6 +22,31 @@ class Ship {
     }, undefined, (error) => {
       console.log(error)
     });
+  }
+
+  moveForward(delta) {
+    this.orientation = this.object.rotation.y;
+
+    // Ship's model orientation in x is inverted, so invert before adding to position.
+    this.object.position.x += delta * Math.cos(this.orientation) * -1;
+    this.object.position.z += delta * Math.sin(this.orientation);
+  }
+
+  accelerate(delta) {
+    let newSpeed = this.speed + delta > 0 ? this.speed + delta : 0
+    this.speed = newSpeed
+  }
+
+  steer(delta) {
+    this.object.rotation.y += delta
+  }
+  
+  update() {
+    this.moveForward(this.speed);
+  }
+
+  isInitialized() {
+    return !!this.object
   }
 }
 

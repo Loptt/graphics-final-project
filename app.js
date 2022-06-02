@@ -151,25 +151,19 @@ function animateWaves(time) {
   sea.geometry.computeVertexNormals();
 }
 
-function move2D(object, deltax, deltaz) {
-  object.position.x += deltax;
-  object.position.z += deltaz;
-}
-
 function controlShip(ship, key) {
   switch(key) {
-    case KEYS.KEY_UP:
-      ship.moveForward(1);
+    case KEYS.UP:
+      ship.accelerate(0.005);
       break;
-    case KEYS.KEY_RIGHT:
-      ship.object.rotateX(Math.PI*(-1/100));
-      console.log(ship.object.rotation)
+    case KEYS.RIGHT:
+      ship.steer(Math.PI*(-1/200));
       break;
-    case KEYS.KEY_DOWN:
+    case KEYS.DOWN:
+      ship.accelerate(-0.005)
       break;
-    case KEYS.KEY_LEFT:
-      ship.object.rotateX(Math.PI*(1/100));
-      console.log(ship.object.rotation)
+    case KEYS.LEFT:
+      ship.steer(Math.PI*(1/200));
       break;
   }
 }
@@ -219,6 +213,10 @@ function main() {
 
     if (sea) {
       animateWaves(tick)
+    }
+
+    if (ship.isInitialized()) {
+      ship.update()
     }
 
     renderer.render(scene, camera);
