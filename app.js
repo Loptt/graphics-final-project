@@ -71,6 +71,24 @@ function configureScene() {
   return scene;
 }
 
+function configureMusic(camera) {
+  const listener = new THREE.AudioListener();
+  camera.add( listener );
+  
+  // create a global audio source
+  const sound = new THREE.Audio( listener );
+  sound.autoplay  = true;
+  
+  // load a sound and set it as the Audio object's buffer
+  const audioLoader = new THREE.AudioLoader();
+  audioLoader.load( 'assets/sounds/weare.ogg', function(buffer) {
+    sound.setBuffer( buffer );
+    sound.setLoop( true );
+    sound.setVolume( 0.5 );
+    sound.play();
+  });
+}
+
 function loadPalms(scene, x, y, z) {
   const loader = new OBJLoader();
   const mtlLoader = new MTLLoader();
@@ -161,16 +179,16 @@ function animateWaves(time) {
 function controlShip(ship, key) {
   switch(key) {
     case KEYS.UP:
-      ship.accelerate(shipAcceleration);
+      ship.accelerate(SHIPCONSTANTS.acceleration);
       break;
     case KEYS.RIGHT:
-      ship.steer(shipSteer*-1);
+      ship.steer(SHIPCONSTANTS.steerRate*-1);
       break;
     case KEYS.DOWN:
-      ship.accelerate(shipAcceleration*-1)
+      ship.accelerate(SHIPCONSTANTS.acceleration*-1)
       break;
     case KEYS.LEFT:
-      ship.steer(shipSteer);
+      ship.steer(SHIPCONSTANTS.steerRate);
       break;
   }
 }
@@ -195,6 +213,7 @@ function main() {
   const renderer = new THREE.WebGLRenderer({ canvas });
   const camera = configureCamera();
   const scene = configureScene();
+  configureMusic(camera);
 
   const controls = new OrbitControls(camera, canvas);
   controls.target.set(0, 5, 0);

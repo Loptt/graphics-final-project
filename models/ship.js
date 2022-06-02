@@ -43,7 +43,6 @@ class Ship {
       newSpeed = this.maxSpeed;
     }
     this.speed = newSpeed
-    console.log("SPEED", newSpeed)
   }
 
   steer(delta) {
