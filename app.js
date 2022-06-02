@@ -3,12 +3,19 @@ import { OrbitControls } from './lib/OrbitControls.js';
 import { GLTFLoader } from './lib/GLTFLoader.js';
 import { OBJLoader } from './lib/OBJLoader.js';
 import { MTLLoader } from './lib/MTLLoader.js';
-import { KEYS } from './constants.js';
+import { KEYS, SHIPCONSTANTS } from './constants.js';
 import { Ship } from './models/ship.js'
 
-let ship = new Ship();
+let ship = new Ship(SHIPCONSTANTS.maxSpeed,
+  SHIPCONSTANTS.minRotationSpeed, 
+  SHIPCONSTANTS.acceleration, 
+  SHIPCONSTANTS.steerRate);
+
 let sea;
 let palms = [];
+
+let shipAcceleration = 0.002;
+let shipSteer = Math.PI / 500;
 
 let pressedKeys = new Set();
 
@@ -154,16 +161,16 @@ function animateWaves(time) {
 function controlShip(ship, key) {
   switch(key) {
     case KEYS.UP:
-      ship.accelerate(0.005);
+      ship.accelerate(shipAcceleration);
       break;
     case KEYS.RIGHT:
-      ship.steer(Math.PI*(-1/200));
+      ship.steer(shipSteer*-1);
       break;
     case KEYS.DOWN:
-      ship.accelerate(-0.005)
+      ship.accelerate(shipAcceleration*-1)
       break;
     case KEYS.LEFT:
-      ship.steer(Math.PI*(1/200));
+      ship.steer(shipSteer);
       break;
   }
 }

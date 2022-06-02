@@ -5,4 +5,11 @@ const KEYS = {
     LEFT: "ArrowLeft",
 }
 
-export {KEYS}
+const SHIPCONSTANTS = {
+    acceleration: 0.002,
+    steerRate: Math.PI / 500,
+    maxSpeed: 0.75,
+    minRotationSpeed: 0.004
+}
+
+export {KEYS, SHIPCONSTANTS}

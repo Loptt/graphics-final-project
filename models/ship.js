@@ -1,10 +1,14 @@
 import {GLTFLoader} from '../lib/GLTFLoader.js';
 
 class Ship {
-  constructor() {
+  constructor(maxSpeed, minRotationSpeed, acceleration, steerRate) {
     this.object = null;
     this.speed = 0;
     this.orientation = 0;
+    this.maxSpeed = maxSpeed;
+    this.minRotationSpeed = minRotationSpeed;
+    this.acceleration = acceleration;
+    this.steerRate = steerRate
     this.assetPath = './assets/going_merry/scene.gltf';
   }
 
@@ -33,11 +37,19 @@ class Ship {
   }
 
   accelerate(delta) {
-    let newSpeed = this.speed + delta > 0 ? this.speed + delta : 0
+    let newSpeed = this.speed + delta > 0 ? this.speed + delta : 0;
+
+    if (newSpeed > this.maxSpeed) {
+      newSpeed = this.maxSpeed;
+    }
     this.speed = newSpeed
+    console.log("SPEED", newSpeed)
   }
 
   steer(delta) {
+    if (this.speed < this.minRotationSpeed) {
+      return;
+    }
     this.object.rotation.y += delta
   }
   
