@@ -3,7 +3,7 @@ import { OrbitControls } from './lib/OrbitControls.js';
 import { GLTFLoader } from './lib/GLTFLoader.js';
 import { OBJLoader } from './lib/OBJLoader.js';
 import { MTLLoader } from './lib/MTLLoader.js';
-import { KEYS, SHIPCONSTANTS } from './constants.js';
+import { KEYS, SHIPCONSTANTS, ISLANDCONSTANTS } from './constants.js';
 import { Ship } from './models/ship.js'
 
 let ship = new Ship(SHIPCONSTANTS.maxSpeed,
@@ -115,6 +115,33 @@ function loadPalms(scene, x, z, r, max_palms) {
   });
 }
 
+function configureCloud(obj) {
+  const newScale = getRandomInt(40, 150);
+  obj.scale.y = newScale;
+  obj.scale.x = newScale;
+  obj.scale.z = newScale;
+
+  obj.position.x = getRandomInt(-400, 400);
+  obj.position.y = getRandomInt(80, 120);;
+  obj.position.z = getRandomInt(-400, 400);;
+}
+
+function loadClouds(scene, max_clouds) {
+  const loader = new OBJLoader();
+  const mtlLoader = new MTLLoader();
+  mtlLoader.load('./assets/cloud/cloud.mtl', (mtl) => {
+    mtl.preload();
+    loader.setMaterials(mtl);
+    loader.load('./assets/cloud/cloud.obj', (obj) => {
+      for (let i = 0; i < max_clouds; i++) {
+        let cloud = obj.clone();
+        configureCloud(cloud);
+        scene.add(cloud);
+      }
+    });
+  });
+}
+
 function genIsland(radious, wSegments, hSegments, x, y, z) {
   const geometry = new THREE.SphereGeometry(radious, wSegments, hSegments, 0, Math.PI * 2, 0, Math.PI / 4);
   const material = new THREE.MeshBasicMaterial({ color: "#CABD97" });
@@ -126,19 +153,19 @@ function genIsland(radious, wSegments, hSegments, x, y, z) {
 }
 
 function loadIslands(scene) {
-  let radious, wSegments, hSegments, x, y, z;
+  let radius, wSegments, hSegments, x, y, z;
   for (let i = 0; i < 8; i++) {
-    radious = getRandomInt(15, 40)
+    radius = getRandomInt(ISLANDCONSTANTS.minRadius, ISLANDCONSTANTS.maxRadius)
     wSegments = getRandomInt(3, 5 + i)
     hSegments = getRandomInt(2, 7 + i)
-    x = 25 + getRandomInt(-100, 100)
-    y = 10 - radious
-    z = 10 + getRandomInt(-100, 100)
-    let max_palms = getRandomInt(0, 5);
+    x = getRandomInt(ISLANDCONSTANTS.minX, ISLANDCONSTANTS.maxX)
+    y = 7 - radius
+    z = getRandomInt(ISLANDCONSTANTS.minZ, ISLANDCONSTANTS.maxZ)
+    let max_palms = getRandomInt(0, ISLANDCONSTANTS.maxVegetation);
     for (let k = 0; k < max_palms; k++) {
-      loadPalms(scene, x, z, radious, max_palms)
+      loadPalms(scene, x, z, radius, max_palms)
     }
-    scene.add(genIsland(radious, wSegments, hSegments, x, y, z));
+    scene.add(genIsland(radius, wSegments, hSegments, x, y, z));
   }
 }
 
@@ -223,6 +250,7 @@ function main() {
 
   createFloor(scene);
   loadIslands(scene);
+  loadClouds(scene, 10);
   ship.load(scene);
   
   setupKeyListeners();

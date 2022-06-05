@@ -12,4 +12,14 @@ const SHIPCONSTANTS = {
     minRotationSpeed: 0.004
 }
 
-export {KEYS, SHIPCONSTANTS}
+const ISLANDCONSTANTS = {
+    maxRadius: 70,
+    minRadius: 15,
+    minX: -120,
+    maxX: 120,
+    minZ: -120,
+    maxZ: 120,
+    maxVegetation: 5
+}
+
+export {KEYS, SHIPCONSTANTS, ISLANDCONSTANTS}
