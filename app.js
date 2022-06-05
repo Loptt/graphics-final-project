@@ -14,9 +14,6 @@ let ship = new Ship(SHIPCONSTANTS.maxSpeed,
 let sea;
 let palms = [];
 
-let shipAcceleration = 0.002;
-let shipSteer = Math.PI / 500;
-
 let pressedKeys = new Set();
 
 // Retorna un entero aleatorio entre min (incluido) y max (excluido)
@@ -24,7 +21,6 @@ let pressedKeys = new Set();
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
-
 
 function resizeRendererToDisplaySize(renderer) {
   const canvas = renderer.domElement;
@@ -73,42 +69,48 @@ function configureScene() {
 
 function configureMusic(camera) {
   const listener = new THREE.AudioListener();
-  camera.add( listener );
+  camera.add(listener);
   
   // create a global audio source
-  const sound = new THREE.Audio( listener );
+  const sound = new THREE.Audio(listener);
   sound.autoplay  = true;
   
   // load a sound and set it as the Audio object's buffer
   const audioLoader = new THREE.AudioLoader();
-  audioLoader.load( 'assets/sounds/weare.ogg', function(buffer) {
-    sound.setBuffer( buffer );
-    sound.setLoop( true );
-    sound.setVolume( 0.5 );
+  audioLoader.load('assets/sounds/weare.ogg', (buffer) => {
+    sound.setBuffer(buffer);
+    sound.setLoop(true);
+    sound.setVolume(0.3);
     sound.play();
   });
 }
 
-function loadPalms(scene, x, y, z) {
+function configurePalm(obj, x, y, z) {
+  obj.position.y = y;
+  obj.position.x = x;
+  obj.position.z = z;
+
+  obj.rotation.x = 1.5 * Math.PI;
+
+  const newScale = 0.004;
+  obj.scale.y = newScale;
+  obj.scale.x = newScale;
+  obj.scale.z = newScale;
+}
+
+function loadPalms(scene, x, z, r, max_palms) {
   const loader = new OBJLoader();
   const mtlLoader = new MTLLoader();
   mtlLoader.load('./assets/palm/palm.mtl', (mtl) => {
     mtl.preload();
     loader.setMaterials(mtl);
-    loader.load('./assets/palm/palm.obj', (root) => {
-      root.position.y = y;
-      root.position.x = x;
-      root.position.z = z;
-
-      root.rotation.x = 1.5 * Math.PI;
-
-      const newScale = 0.004;
-      root.scale.y = newScale;
-      root.scale.x = newScale;
-      root.scale.z = newScale;
-
-      scene.add(root);
-      palms.push(root);
+    loader.load('./assets/palm/palm.obj', (obj) => {
+      for (let k = 0; k < max_palms; k++) {
+        let palm = obj.clone();
+        configurePalm(palm, x + getRandomInt(-r / 2, r / 2), 4, z + getRandomInt(-r / 2, r / 2))
+        scene.add(palm);
+        palms.push(palm);
+      }
     });
   });
 }
@@ -134,7 +136,7 @@ function loadIslands(scene) {
     z = 10 + getRandomInt(-100, 100)
     let max_palms = getRandomInt(0, 5);
     for (let k = 0; k < max_palms; k++) {
-      loadPalms(scene, x + getRandomInt(-radious / 2, radious / 2), 4, z + getRandomInt(-radious / 2, radious / 2))
+      loadPalms(scene, x, z, radious, max_palms)
     }
     scene.add(genIsland(radious, wSegments, hSegments, x, y, z));
   }
