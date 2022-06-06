@@ -53,10 +53,12 @@ function configureScene() {
     const sunIntensity = 2;
     const sunLight = new THREE.DirectionalLight(color, sunIntensity);
     sunLight.position.set(-1, 2, 4);
-    sunLight.shadow.mapSize.width = 1000; // default
-    sunLight.shadow.mapSize.height = 1000; // default
-    sunLight.shadow.camera.near = 0.5; // default
-    sunLight.shadow.camera.far = 500; // default
+    sunLight.castShadow = true;
+    sunLight.shadowDarkness = 1;
+    sunLight.shadow.mapSize.width = 512; // default
+    sunLight.shadow.mapSize.height = 512; // default
+    sunLight.shadow.camera.near = 2; // default
+    sunLight.shadow.camera.far = 1250; // default
     scene.add(sunLight);
 
     const skyColor = 0xB1E1FF;  // light blue
@@ -189,7 +191,6 @@ function genIsland(radious, wSegments, hSegments, x, y, z) {
   sphere.position.x = x;
   sphere.position.z = z;
 
-  sphere.castShadow = false;
   sphere.receiveShadow = true;
   return sphere
 }
