@@ -53,6 +53,10 @@ function configureScene() {
     const sunIntensity = 2;
     const sunLight = new THREE.DirectionalLight(color, sunIntensity);
     sunLight.position.set(-1, 2, 4);
+    sunLight.shadow.mapSize.width = 1000; // default
+    sunLight.shadow.mapSize.height = 1000; // default
+    sunLight.shadow.camera.near = 0.5; // default
+    sunLight.shadow.camera.far = 500; // default
     scene.add(sunLight);
 
     const skyColor = 0xB1E1FF;  // light blue
@@ -60,11 +64,6 @@ function configureScene() {
     const hemisphereIntensity = 1;
     const hemisphereLight = new THREE.HemisphereLight(skyColor, groundColor, hemisphereIntensity);
     scene.add(hemisphereLight);
-
-    sunLight.shadow.mapSize.width = 1000; // default
-    sunLight.shadow.mapSize.height = 1000; // default
-    sunLight.shadow.camera.near = 0.5; // default
-    sunLight.shadow.camera.far = 500; // default
 
     scene.background = new THREE.Color(skyColor);
   }
@@ -183,8 +182,8 @@ function loadClouds(scene, max_clouds) {
 
 function genIsland(radious, wSegments, hSegments, x, y, z) {
   const geometry = new THREE.SphereGeometry(radious, wSegments, hSegments, 0, Math.PI * 2, 0, Math.PI / 4);
-  const texture = new THREE.TextureLoader().load('./assets/sand/sand2.jpg')
-  const material = new THREE.MeshBasicMaterial({ color: "#CABD97", map: texture });
+  const texture = new THREE.TextureLoader().load('./assets/sand/sand.jpg')
+  const material = new THREE.MeshBasicMaterial({ map: texture });
   let sphere = new THREE.Mesh(geometry, material);
   sphere.position.y = y;
   sphere.position.x = x;
@@ -295,6 +294,8 @@ function processKeys(pressedKeys) {
 function main() {
   const canvas = document.querySelector('#glcanvas');
   const renderer = new THREE.WebGLRenderer({ canvas });
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   const camera = configureCamera();
   const scene = configureScene();
   configureMusic(camera);
