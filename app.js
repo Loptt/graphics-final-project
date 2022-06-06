@@ -12,7 +12,6 @@ let ship = new Ship(SHIPCONSTANTS.maxSpeed,
   SHIPCONSTANTS.steerRate);
 
 let sea;
-let palms = [];
 
 let pressedKeys = new Set();
 
@@ -92,7 +91,7 @@ function configurePalm(obj, x, y, z) {
 
   obj.rotation.x = 1.5 * Math.PI;
 
-  const newScale = 0.004;
+  const newScale = 0.006 + (Math.random()*0.015);
   obj.scale.y = newScale;
   obj.scale.x = newScale;
   obj.scale.z = newScale;
@@ -101,17 +100,44 @@ function configurePalm(obj, x, y, z) {
 function loadPalms(scene, x, z, r, max_palms) {
   const loader = new OBJLoader();
   const mtlLoader = new MTLLoader();
+  const maxDist = r / ISLANDCONSTANTS.vegetationDistance;
   mtlLoader.load('./assets/palm/palm.mtl', (mtl) => {
     mtl.preload();
     loader.setMaterials(mtl);
     loader.load('./assets/palm/palm.obj', (obj) => {
       for (let k = 0; k < max_palms; k++) {
         let palm = obj.clone();
-        configurePalm(palm, x + getRandomInt(-r / 2, r / 2), 4, z + getRandomInt(-r / 2, r / 2))
+        configurePalm(palm, x + getRandomInt(-maxDist, maxDist), 3.5, z + getRandomInt(-maxDist, maxDist))
         scene.add(palm);
-        palms.push(palm);
       }
     });
+  });
+}
+
+function configureShrub(obj, x, y, z) {
+  obj.position.y = y;
+  obj.position.x = x;
+  obj.position.z = z;
+
+  obj.rotation.x = 0;
+
+  const newScale = getRandomInt(2, 5);
+  obj.scale.y = newScale;
+  obj.scale.x = newScale;
+  obj.scale.z = newScale;
+}
+
+function loadShrubs(scene, x, z, r, max_shrubs) {
+  const loader = new GLTFLoader();
+  const maxDist = r / ISLANDCONSTANTS.vegetationDistance;
+  loader.load("./assets/shrub/scene.gltf", (obj) => {
+    for (let k = 0; k < max_shrubs; k++) {
+      let shrub = obj.scene.clone();
+      configureShrub(shrub, x + getRandomInt(-maxDist, maxDist), 3.5, z + getRandomInt(-maxDist, maxDist))
+      scene.add(shrub);
+    }
+  }, undefined, (error) => {
+    console.log(error)
   });
 }
 
@@ -154,17 +180,16 @@ function genIsland(radious, wSegments, hSegments, x, y, z) {
 
 function loadIslands(scene) {
   let radius, wSegments, hSegments, x, y, z;
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < ISLANDCONSTANTS.amount; i++) {
     radius = getRandomInt(ISLANDCONSTANTS.minRadius, ISLANDCONSTANTS.maxRadius)
     wSegments = getRandomInt(3, 5 + i)
     hSegments = getRandomInt(2, 7 + i)
     x = getRandomInt(ISLANDCONSTANTS.minX, ISLANDCONSTANTS.maxX)
     y = 7 - radius
     z = getRandomInt(ISLANDCONSTANTS.minZ, ISLANDCONSTANTS.maxZ)
-    let max_palms = getRandomInt(0, ISLANDCONSTANTS.maxVegetation);
-    for (let k = 0; k < max_palms; k++) {
-      loadPalms(scene, x, z, radius, max_palms)
-    }
+    let max_vegetation = getRandomInt(1, ISLANDCONSTANTS.maxVegetation);
+    loadPalms(scene, x, z, radius, max_vegetation);
+    loadShrubs(scene, x, z, radius, max_vegetation);
     scene.add(genIsland(radius, wSegments, hSegments, x, y, z));
   }
 }

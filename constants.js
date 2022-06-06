@@ -13,13 +13,15 @@ const SHIPCONSTANTS = {
 }
 
 const ISLANDCONSTANTS = {
-    maxRadius: 70,
+    amount: 20,
+    maxRadius: 100,
     minRadius: 15,
-    minX: -120,
-    maxX: 120,
-    minZ: -120,
-    maxZ: 120,
-    maxVegetation: 5
+    minX: -300,
+    maxX: 300,
+    minZ: -300,
+    maxZ: 300,
+    maxVegetation: 5,
+    vegetationDistance: 5
 }
 
 export {KEYS, SHIPCONSTANTS, ISLANDCONSTANTS}
