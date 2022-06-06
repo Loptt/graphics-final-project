@@ -61,6 +61,11 @@ function configureScene() {
     const hemisphereLight = new THREE.HemisphereLight(skyColor, groundColor, hemisphereIntensity);
     scene.add(hemisphereLight);
 
+    sunLight.shadow.mapSize.width = 1000; // default
+    sunLight.shadow.mapSize.height = 1000; // default
+    sunLight.shadow.camera.near = 0.5; // default
+    sunLight.shadow.camera.far = 500; // default
+
     scene.background = new THREE.Color(skyColor);
   }
 
@@ -96,6 +101,9 @@ function configurePalm(obj, x, y, z) {
   obj.scale.y = newScale;
   obj.scale.x = newScale;
   obj.scale.z = newScale;
+
+  obj.castShadow = true;
+  obj.receiveShadow = false;
 }
 
 function loadPalms(scene, x, z, r, max_palms) {
@@ -126,6 +134,9 @@ function configureShrub(obj, x, y, z) {
   obj.scale.y = newScale;
   obj.scale.x = newScale;
   obj.scale.z = newScale;
+
+  obj.castShadow = true;
+  obj.receiveShadow = false;
 }
 
 function loadShrubs(scene, x, z, r, max_shrubs) {
@@ -178,6 +189,9 @@ function genIsland(radious, wSegments, hSegments, x, y, z) {
   sphere.position.y = y;
   sphere.position.x = x;
   sphere.position.z = z;
+
+  sphere.castShadow = false;
+  sphere.receiveShadow = true;
   return sphere
 }
 
