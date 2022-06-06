@@ -11,9 +11,10 @@ let ship = new Ship(SHIPCONSTANTS.maxSpeed,
   SHIPCONSTANTS.acceleration, 
   SHIPCONSTANTS.steerRate);
 
-let sea;
+let sea
 
 let pressedKeys = new Set();
+let clouds = [];
 
 // Retorna un entero aleatorio entre min (incluido) y max (excluido)
 // ¡Usando Math.round() te dará una distribución no-uniforme!
@@ -91,7 +92,7 @@ function configurePalm(obj, x, y, z) {
 
   obj.rotation.x = 1.5 * Math.PI;
 
-  const newScale = 0.006 + (Math.random()*0.015);
+  const newScale = 0.006 + (Math.random()*0.02);
   obj.scale.y = newScale;
   obj.scale.x = newScale;
   obj.scale.z = newScale;
@@ -121,7 +122,7 @@ function configureShrub(obj, x, y, z) {
 
   obj.rotation.x = 0;
 
-  const newScale = getRandomInt(2, 5);
+  const newScale = getRandomInt(2, 10);
   obj.scale.y = newScale;
   obj.scale.x = newScale;
   obj.scale.z = newScale;
@@ -147,9 +148,9 @@ function configureCloud(obj) {
   obj.scale.x = newScale;
   obj.scale.z = newScale;
 
-  obj.position.x = getRandomInt(-400, 400);
+  obj.position.x = getRandomInt(-1000, 1000);
   obj.position.y = getRandomInt(80, 120);;
-  obj.position.z = getRandomInt(-400, 400);;
+  obj.position.z = getRandomInt(-1000, 1000);;
 }
 
 function loadClouds(scene, max_clouds) {
@@ -163,6 +164,7 @@ function loadClouds(scene, max_clouds) {
         let cloud = obj.clone();
         configureCloud(cloud);
         scene.add(cloud);
+        clouds.push(cloud);
       }
     });
   });
@@ -170,7 +172,8 @@ function loadClouds(scene, max_clouds) {
 
 function genIsland(radious, wSegments, hSegments, x, y, z) {
   const geometry = new THREE.SphereGeometry(radious, wSegments, hSegments, 0, Math.PI * 2, 0, Math.PI / 4);
-  const material = new THREE.MeshBasicMaterial({ color: "#CABD97" });
+  const texture = new THREE.TextureLoader().load('./assets/sand/sand2.jpg')
+  const material = new THREE.MeshBasicMaterial({ color: "#CABD97", map: texture });
   let sphere = new THREE.Mesh(geometry, material);
   sphere.position.y = y;
   sphere.position.x = x;
@@ -215,8 +218,8 @@ function createFloor(scene) {
 function animateWaves(time) {
   let vertices = sea.geometry.attributes.position.array;
   var wavespeed = 0.02;
-  var wavewidth = 0.6;
-  var waveheight = 3;
+  var wavewidth = 0.4;
+  var waveheight = 2.5;
   for (let vertexIndex = 0; vertexIndex < vertices.length; vertexIndex += 3) {
     // console.log(vertices[vertexIndex+2])
     if (vertices[vertexIndex + 2] > -1) {
@@ -228,6 +231,19 @@ function animateWaves(time) {
   }
   sea.geometry.attributes.position.needsUpdate = true;
   sea.geometry.computeVertexNormals();
+}
+
+function animateClouds() {
+  for (const cloud of clouds) {
+    if (cloud.position.x > 1000) {
+      cloud.position.x = -1000;
+    }
+    if (cloud.position.z > 1000) {
+      cloud.position.z = -1000;
+    }
+    cloud.position.x += 0.1
+    cloud.position.z += 0.1
+  }
 }
 
 function controlShip(ship, key) {
@@ -299,6 +315,8 @@ function main() {
     if (ship.isInitialized()) {
       ship.update()
     }
+    
+    animateClouds();
 
     renderer.render(scene, camera);
 

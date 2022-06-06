@@ -16,8 +16,8 @@ class Ship {
     const loader = new GLTFLoader();
     loader.load(this.assetPath, (gltf) => {
       let object = gltf.scene;
-      object.position.y = -1;
-      const newScale = 2;
+      object.position.y = -3;
+      const newScale = 2.7;
       object.scale.y = newScale;
       object.scale.x = newScale;
       object.scale.z = newScale;
