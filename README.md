@@ -5,6 +5,9 @@ Milestones: <br />
 :white_check_mark: 2.- Palm Trees and Islands assets <br />
 :white_check_mark: 3.- Water/Ocean assets <br />
 :white_check_mark: 4.- Water/Ocean movement <br />
+:white_check_mark: 5.- Going merry movement with arrow keys movement <br />
+:white_check_mark: 6.- Clouds in the sky with movement <br />
+:white_check_mark: 7.- Better island procedural generation (correct vegetation and size) <br />
 
 
 ## References
