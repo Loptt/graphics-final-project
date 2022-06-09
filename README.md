@@ -1,13 +1,15 @@
-# graphics-final-project
+# Going Merry driver
 
-Milestones: <br />
-:white_check_mark: 1.- Going Merry (barco) asset <br />
-:white_check_mark: 2.- Palm Trees and Islands assets <br />
-:white_check_mark: 3.- Water/Ocean assets <br />
-:white_check_mark: 4.- Water/Ocean movement <br />
-:white_check_mark: 5.- Going merry movement with arrow keys movement <br />
-:white_check_mark: 6.- Clouds in the sky with movement <br />
-:white_check_mark: 7.- Better island procedural generation (correct vegetation and size) <br />
+Live demo [here](https://loptt.github.io/graphics-final-project)
+
+## Milestones    
+:white_check_mark: 1.- Going Merry (barco) asset  
+:white_check_mark: 2.- Palm Trees and Islands assets  
+:white_check_mark: 3.- Water/Ocean assets  
+:white_check_mark: 4.- Water/Ocean movement  
+:white_check_mark: 5.- Going merry movement with arrow keys movement  
+:white_check_mark: 6.- Clouds in the sky with movement  
+:white_check_mark: 7.- Better island procedural generation (correct vegetation and size)  
 
 
 ## References
