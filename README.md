@@ -9,7 +9,8 @@ Live demo [here](https://loptt.github.io/graphics-final-project)
 :white_check_mark: 4.- Water/Ocean movement  
 :white_check_mark: 5.- Going merry movement with arrow keys movement  
 :white_check_mark: 6.- Clouds in the sky with movement  
-:white_check_mark: 7.- Better island procedural generation (correct vegetation and size)  
+:white_check_mark: 7.- Better island procedural generation (correct vegetation, size and postion)  
+:white_check_mark: 8.- Collisions between ship and islands 
 
 
 ## References
