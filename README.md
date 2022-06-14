@@ -1,5 +1,17 @@
-# Going Merry driver
+# Going Merry Driver
 
+
+
+Going Merry Driver is a simulation of the Going Merry, the first ship of the Straw Hat crew from One Piece. In the simulation, you can control the ship and drive it across a sea with several procedurally generated islands.
+
+## Requirements
+- Any web browser that has support for WebGL.
+- Recommended to have a graphics card as the simulator is resource intensive.
+- It is recommended to have hardware acceleration enabled in the browser. See this [tutorial](https://www.howtogeek.com/412738/how-to-turn-hardware-acceleration-on-and-off-in-chrome/) for instructions for Chrome.
+
+## Controls
+
+## Demo
 Live demo [here](https://loptt.github.io/graphics-final-project)
 
 ## Milestones    
