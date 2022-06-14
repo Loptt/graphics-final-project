@@ -202,8 +202,18 @@ function loadIslands(scene) {
     wSegments = getRandomInt(3, 5 + i)
     hSegments = getRandomInt(2, 7 + i)
     x = getRandomInt(ISLANDCONSTANTS.minX, ISLANDCONSTANTS.maxX)
-    y = 7 - radius
     z = getRandomInt(ISLANDCONSTANTS.minZ, ISLANDCONSTANTS.maxZ)
+    y = 7 - radius
+
+    // Fix bug an island is created over the ship
+    while(x < ISLANDCONSTANTS.notMax && x > ISLANDCONSTANTS.notMin){
+    x = getRandomInt(ISLANDCONSTANTS.minX, ISLANDCONSTANTS.maxX)
+    }
+
+    while(z < ISLANDCONSTANTS.notMax && z > ISLANDCONSTANTS.notMin){
+    z = getRandomInt(ISLANDCONSTANTS.minZ, ISLANDCONSTANTS.maxZ)
+    }
+    
     let max_vegetation = getRandomInt(1, ISLANDCONSTANTS.maxVegetation);
     loadPalms(scene, x, z, radius, max_vegetation);
     loadShrubs(scene, x, z, radius, max_vegetation);

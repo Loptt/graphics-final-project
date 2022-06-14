@@ -19,9 +19,11 @@ const ISLANDCONSTANTS = {
     minX: -300,
     maxX: 300,
     minZ: -300,
-    maxZ: 200,
+    maxZ: 300,
     maxVegetation: 10,
-    vegetationDistance: 5
+    vegetationDistance: 5,
+    notMin: -30,
+    notMax: 30,
 }
 
 export {KEYS, SHIPCONSTANTS, ISLANDCONSTANTS}
