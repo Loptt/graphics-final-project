@@ -15,6 +15,7 @@ let sea
 
 let pressedKeys = new Set();
 let clouds = [];
+let islands = [];
 
 // Retorna un entero aleatorio entre min (incluido) y max (excluido)
 // ¡Usando Math.round() te dará una distribución no-uniforme!
@@ -207,7 +208,9 @@ function loadIslands(scene) {
     let max_vegetation = getRandomInt(1, ISLANDCONSTANTS.maxVegetation);
     loadPalms(scene, x, z, radius, max_vegetation);
     loadShrubs(scene, x, z, radius, max_vegetation);
-    scene.add(genIsland(radius, wSegments, hSegments, x, y, z));
+    let island = genIsland(radius, wSegments, hSegments, x, y, z)
+    scene.add(island);
+    islands.push(island)
   }
 }
 
@@ -235,13 +238,11 @@ function animateWaves(time) {
   var wavewidth = 0.4;
   var waveheight = 2.5;
   for (let vertexIndex = 0; vertexIndex < vertices.length; vertexIndex += 3) {
-    // console.log(vertices[vertexIndex+2])
     if (vertices[vertexIndex + 2] > -1) {
       var wave1 = Math.sin((time + (vertices[vertexIndex] / wavewidth) + (vertices[vertexIndex + 1] / wavewidth)) * wavespeed) * waveheight;
       var wave2 = Math.cos((time + (vertices[vertexIndex] / wavewidth) + (vertices[vertexIndex + 1] / wavewidth)) * (wavespeed - 0.02)) * waveheight / 2 + 2;
       vertices[vertexIndex + 2] = 40 + wave1 + wave2;
     }
-    // do something with vertex
   }
   sea.geometry.attributes.position.needsUpdate = true;
   sea.geometry.computeVertexNormals();

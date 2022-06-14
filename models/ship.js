@@ -30,7 +30,6 @@ class Ship {
 
   moveForward(delta) {
     this.orientation = this.object.rotation.y;
-
     // Ship's model orientation in x is inverted, so invert before adding to position.
     this.object.position.x += delta * Math.cos(this.orientation) * -1;
     this.object.position.z += delta * Math.sin(this.orientation);

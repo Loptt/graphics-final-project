@@ -19,7 +19,7 @@ const ISLANDCONSTANTS = {
     minX: -300,
     maxX: 300,
     minZ: -300,
-    maxZ: 300,
+    maxZ: 200,
     maxVegetation: 10,
     vegetationDistance: 5
 }
