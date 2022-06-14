@@ -35,6 +35,13 @@ class Ship {
     this.object.position.z += delta * Math.sin(this.orientation);
   }
 
+  moveBackward(delta){
+    this.orientation = this.object.rotation.y;
+    // Ship's model orientation in x is inverted, so invert before adding to position.
+    this.object.position.x -= delta * Math.cos(this.orientation) * -1;
+    this.object.position.z -= delta * Math.sin(this.orientation);
+  }
+
   accelerate(delta) {
     let newSpeed = this.speed + delta > 0 ? this.speed + delta : 0;
 
@@ -51,8 +58,20 @@ class Ship {
     this.object.rotation.y += delta
   }
   
-  update() {
+  update(islands) {
     this.moveForward(this.speed);
+    let collides = false
+    islands.forEach(island => {
+      let ierror = island.geometry.parameters.radius * .40
+      let ix = island.position.x
+      let iz = island.position.z
+      if(Math.abs(this.object.position.x - ix) <= ierror && Math.abs(this.object.position.z - iz) <= ierror){
+        collides = true || collides
+      }
+    });
+    if(collides){
+      this.moveBackward(this.speed)
+    }
   }
 
   isInitialized() {

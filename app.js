@@ -191,7 +191,6 @@ function genIsland(radious, wSegments, hSegments, x, y, z) {
   sphere.position.y = y;
   sphere.position.x = x;
   sphere.position.z = z;
-
   sphere.receiveShadow = true;
   return sphere
 }
@@ -330,7 +329,7 @@ function main() {
     }
 
     if (ship.isInitialized()) {
-      ship.update()
+      ship.update(islands)
     }
     
     animateClouds();
