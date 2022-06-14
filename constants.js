@@ -7,7 +7,7 @@ const KEYS = {
 
 const SHIPCONSTANTS = {
     acceleration: 0.002,
-    steerRate: Math.PI / 500,
+    steerRate: Math.PI / 200,
     maxSpeed: 0.75,
     minRotationSpeed: 0.004
 }
