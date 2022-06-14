@@ -16,6 +16,12 @@ class Ship {
     const loader = new GLTFLoader();
     loader.load(this.assetPath, (gltf) => {
       let object = gltf.scene;
+      object.traverse((child) => {
+        if (child.isMesh) {
+          child.castShadow = true;
+          child.receiveShadow = true;
+        }
+      })
       object.position.y = -3;
       const newScale = 2.7;
       object.scale.y = newScale;

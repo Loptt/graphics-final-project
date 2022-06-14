@@ -53,18 +53,23 @@ function configureScene() {
     const color = 0xFFFFFF;
     const sunIntensity = 2;
     const sunLight = new THREE.DirectionalLight(color, sunIntensity);
-    sunLight.position.set(-1, 2, 4);
+    sunLight.position.set(1, 1, 1);
     sunLight.castShadow = true;
-    sunLight.shadowDarkness = 1;
-    sunLight.shadow.mapSize.width = 512; // default
-    sunLight.shadow.mapSize.height = 512; // default
-    sunLight.shadow.camera.near = 2; // default
-    sunLight.shadow.camera.far = 1250; // default
+    sunLight.shadowDarkness = 0.5;
+    sunLight.shadow.mapSize.width = 4096; // default
+    sunLight.shadow.mapSize.height = 4096; // default
+    sunLight.shadow.camera.near = -750; 
+    sunLight.shadow.camera.far = 600; 
+    sunLight.shadow.camera.top = 400; 
+    sunLight.shadow.camera.bottom = -400; 
+    sunLight.shadow.camera.left = 800; 
+    sunLight.shadow.camera.right = -800; 
+    
     scene.add(sunLight);
 
     const skyColor = 0xB1E1FF;  // light blue
     const groundColor = 0x3daeff;  // brownish orange
-    const hemisphereIntensity = 1;
+    const hemisphereIntensity = 0.7;
     const hemisphereLight = new THREE.HemisphereLight(skyColor, groundColor, hemisphereIntensity);
     scene.add(hemisphereLight);
 
@@ -116,6 +121,11 @@ function loadPalms(scene, x, z, r, max_palms) {
     mtl.preload();
     loader.setMaterials(mtl);
     loader.load('./assets/palm/palm.obj', (obj) => {
+      obj.traverse((child) => {
+        if (child.isMesh) {
+          child.castShadow = true;
+        }
+      })
       for (let k = 0; k < max_palms; k++) {
         let palm = obj.clone();
         configurePalm(palm, x + getRandomInt(-maxDist, maxDist), 3.5, z + getRandomInt(-maxDist, maxDist))
@@ -145,6 +155,11 @@ function loadShrubs(scene, x, z, r, max_shrubs) {
   const loader = new GLTFLoader();
   const maxDist = r / ISLANDCONSTANTS.vegetationDistance;
   loader.load("./assets/shrub/scene.gltf", (obj) => {
+    obj.scene.traverse((child) => {
+      if (child.isMesh) {
+        child.castShadow = true;
+      }
+    })
     for (let k = 0; k < max_shrubs; k++) {
       let shrub = obj.scene.clone();
       configureShrub(shrub, x + getRandomInt(-maxDist, maxDist), 3.5, z + getRandomInt(-maxDist, maxDist))
@@ -173,6 +188,11 @@ function loadClouds(scene, max_clouds) {
     mtl.preload();
     loader.setMaterials(mtl);
     loader.load('./assets/cloud/cloud.obj', (obj) => {
+      obj.traverse((child) => {
+        if (child.isMesh) {
+          child.castShadow = true;
+        }
+      })
       for (let i = 0; i < max_clouds; i++) {
         let cloud = obj.clone();
         configureCloud(cloud);
@@ -183,10 +203,10 @@ function loadClouds(scene, max_clouds) {
   });
 }
 
-function genIsland(radious, wSegments, hSegments, x, y, z) {
+function genIsland(radious, wSegments, hSegments, x, y, z) {  
   const geometry = new THREE.SphereGeometry(radious, wSegments, hSegments, 0, Math.PI * 2, 0, Math.PI / 4);
   const texture = new THREE.TextureLoader().load('./assets/sand/sand.jpg')
-  const material = new THREE.MeshBasicMaterial({ map: texture });
+  const material = new THREE.MeshLambertMaterial({ map: texture });
   let sphere = new THREE.Mesh(geometry, material);
   sphere.position.y = y;
   sphere.position.x = x;
